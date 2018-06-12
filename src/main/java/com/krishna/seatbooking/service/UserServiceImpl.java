@@ -5,6 +5,7 @@ import java.util.HashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
     private RoleRepository roleRepository;
 	
-	 @Autowired
+	 //@Autowired
 	 private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@Override
@@ -36,7 +37,14 @@ public class UserServiceImpl implements UserService {
 	@Override
     public User findByUserName(String userName) {
 		logger.info("userName before retreving data from db :"+userName);
-        return userRepository.findByUserName(userName);
+        //return userRepository.findByUserName(userName);
+        final User user = userRepository.findByUserName(userName);
+		if (user == null) {
+			throw new UsernameNotFoundException("No user found with username: " + userName);
+		}
+		return user;
+		/*return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(),
+				user.getEnable(), true, true, true, getAuthorities(user.getRoles()));*/
     }
 	
     

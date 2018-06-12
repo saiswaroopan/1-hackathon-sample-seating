@@ -1,5 +1,9 @@
 package com.krishna.seatbooking;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +45,15 @@ public class UserController {
 	@RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model) {
         model.addAttribute("userForm", new User());
+        model.addAttribute("countries", addCounties());
 
         logger.info(" ----- In registration of GET method ---");
         return "registration";
     }
+	
+	public List<String> addCounties() {
+		return Stream.of("IN", "US", "UK").collect(Collectors.toList());
+	}
 	
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String registration(@ModelAttribute("userForm") User userFormObject, BindingResult bindingResult, Model model) {
@@ -61,7 +70,7 @@ public class UserController {
 
         securityService.autologin(userFormObject.getUserName(), userFormObject.getConfirmPassword());
 
-        return "redirect:/welcome";
+        return "redirect:/home";
     }
     
 	@RequestMapping(value = "/login", method = RequestMethod.GET)

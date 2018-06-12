@@ -10,7 +10,7 @@
 </head>
 <body>
 <div>
-
+<h2>${message}</h2>
         <h2>Welcome ${pageContext.request.userPrincipal.name}</h2>
 
 </div>

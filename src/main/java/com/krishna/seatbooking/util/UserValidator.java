@@ -29,15 +29,15 @@ public class UserValidator implements Validator {
 	@Override
 	public void validate(Object obj, Errors errors) {
 		User user = (User) obj;
-		logger.info("user name before validation---  :"+user.getUserName());
+		logger.info("email before validation---  :"+user.getEmail());
 		logger.info("password before validation---  :"+user.getPassword());
 		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userName", "NotEmpty");
-		if (user.getUserName().length() < 6 || user.getUserName().length() > 32) {
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "NotEmpty");
+		if (user.getEmail().length() < 6 || user.getEmail().length() > 32) {
             errors.rejectValue("userName", "Size.userForm.userName");
         }
 		
-		if (userService.findByUserName(user.getUserName()) != null) {
+		if (userService.findByUserName(user.getEmail()) != null) {
             errors.rejectValue("userName", "Duplicate.userForm.userName");
         }
 		

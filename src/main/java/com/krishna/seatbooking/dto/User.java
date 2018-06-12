@@ -24,6 +24,9 @@ public class User {
     private String confirmPassword;
     private String firstName;
     private String lastName;
+    private String email;
+    private String location;
+    private String country;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Role> roles;
 
