@@ -30,6 +30,10 @@ public class UserController {
 		this.userService = userService;
 	}
 	
+	public UserController() {
+		
+	}
+	
 	public UserController(SecurityService securityService) {
 		this.securityService = securityService;
 	}
