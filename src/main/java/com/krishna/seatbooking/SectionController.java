@@ -17,8 +17,12 @@ import lombok.val;
 public class SectionController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
+	//@Autowired
 	private SectionRepository sectionsRepository;
+	
+	public SectionController(SectionRepository sectionsRepository){
+		this.sectionsRepository = sectionsRepository;
+	}
 
     @RequestMapping("/")
     public String home(Model model) {
