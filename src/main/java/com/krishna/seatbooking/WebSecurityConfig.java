@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -27,11 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public PasswordEncoder bCryptPasswordEncoder() {
-		// PasswordEncoder k;
-		// return new BCryptPasswordEncoder();
-		return NoOpPasswordEncoder.getInstance();
-		// return new NoOpPasswordEncoder();
-
+		return new BCryptPasswordEncoder();
 	}
 
 	@Bean(name = BeanIds.AUTHENTICATION_MANAGER)
@@ -49,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		 * .and().csrf().disable();
 		 */
 
-		http.authorizeRequests().antMatchers("/resources/**", "/registration").permitAll().anyRequest().authenticated()
+		http.authorizeRequests().antMatchers("/css/**", "/js/**", "/registration").permitAll().anyRequest().authenticated()
 				.and().formLogin().loginPage("/login").permitAll().and().logout().permitAll();
 
 	}

@@ -28,6 +28,8 @@ public class SecurityServiceImpl implements SecurityService {
 	 @Override
      public String findLoggedInUserName() {
         Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        logger.info(" ----- userDetails in findLoggedInUserName--- :"+userDetails);
+        
         if (userDetails instanceof UserDetails) {
             return ((UserDetails)userDetails).getUsername();
         }
@@ -38,6 +40,8 @@ public class SecurityServiceImpl implements SecurityService {
 
 	@Override
 	public void autologin(String userName, String password) {
+		
+		logger.info(" ----- userName in autologin--- :"+userName);
 		
 		UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
 		logger.info(" ----- In Auto login method get password from db---"+userDetails.getPassword());

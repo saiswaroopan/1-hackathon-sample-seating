@@ -7,9 +7,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Login Screen</title>
-<link href="/css/bootstrap.min.css" rel="stylesheet">
-<script src="/js/jquery-2.2.1.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<script src="js/jquery-2.2.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 </head>
 	<body>
 	<div class="container" style="margin: 50px">

@@ -1,5 +1,6 @@
 package com.krishna.seatbooking;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.krishna.seatbooking.dto.User;
+import com.krishna.seatbooking.dto.UserForm;
 import com.krishna.seatbooking.service.SecurityService;
 import com.krishna.seatbooking.service.UserService;
 import com.krishna.seatbooking.util.UserValidator;
@@ -23,28 +25,20 @@ import com.krishna.seatbooking.util.UserValidator;
 public class UserController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	@Autowired
 	private UserService userService;
 	
-	private SecurityService securityService;
 	
 	@Autowired
 	private UserValidator userValidator;
 	
-	public UserController(UserService userService) {
-		this.userService = userService;
-	}
+	@Autowired
+	private SecurityService securityService;
 	
-	public UserController() {
-		
-	}
-	
-	public UserController(SecurityService securityService) {
-		this.securityService = securityService;
-	}
 	
 	@RequestMapping(value = "/registration", method = RequestMethod.GET)
     public String registration(Model model) {
-        model.addAttribute("userForm", new User());
+        model.addAttribute("userForm", new UserForm());
         model.addAttribute("countries", addCounties());
 
         logger.info(" ----- In registration of GET method ---");
@@ -56,19 +50,20 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public String registration(@ModelAttribute("userForm") User userFormObject, BindingResult bindingResult, Model model) {
+    public String registration(@ModelAttribute("userForm") UserForm userFormObject, BindingResult bindingResult, Model model) {
 		logger.info(" ----- In registration of POST method ---");
-		
+		logger.info("email from userFormObject ---  :"+userFormObject.getEmail());
 		userValidator.validate(userFormObject, bindingResult);
 		
-		logger.info(" ----- error count---"+bindingResult.getErrorCount());
+		logger.info(" ----- error count---"+bindingResult.hasErrors());
         if (bindingResult.hasErrors()) {
+        	logger.info(" -----Registration page havign errors-------");
             return "registration";
         }
 
-        userService.save(userFormObject);
-
-        securityService.autologin(userFormObject.getUserName(), userFormObject.getConfirmPassword());
+        userService.save(buildUser(userFormObject));
+        logger.info(" -----After saving user details---");
+        securityService.autologin(userFormObject.getEmail(), userFormObject.getConfirmPassword());
 
         return "redirect:/home";
     }
@@ -76,7 +71,7 @@ public class UserController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Model model, String error, String logout) {
 		
-		logger.info(" ----- In login method ---");
+		logger.info(" ----- In login method ---"+error);
         if (error != null)
             model.addAttribute("error", "Your username and password is invalid.");
 
@@ -85,15 +80,14 @@ public class UserController {
 
         return "login";
     }
+	
+	private User buildUser(UserForm userForm) {
+		User user = User.builder().updatedTmstp(Calendar.getInstance().getTime()).userName(userForm.getEmail())
+				.firstName(userForm.getFirstName()).lastName(userForm.getLastName()).enabled(true)
+				.location(userForm.getLocation()).country(userForm.getCountry()).password(userForm.getPassword())
+				.createdTmstp(Calendar.getInstance().getTime()).build();
+		return user;
+	}
 
-    @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
-    public String welcome(Model model) {
-    	logger.info(" ----- In welcome method ---");
-        return "welcome";
-    }
-    
-
-
-    
 
 }

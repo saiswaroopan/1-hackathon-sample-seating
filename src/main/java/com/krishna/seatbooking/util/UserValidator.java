@@ -1,23 +1,29 @@
 package com.krishna.seatbooking.util;
 
 
+import java.util.regex.Pattern;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import com.krishna.seatbooking.dto.User;
-import com.krishna.seatbooking.service.UserService;
+import com.krishna.seatbooking.dto.UserForm;
 
 @Component
+//@PropertySource("validation.properties")
 public class UserValidator implements Validator {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-    private UserService userService;
+    private UserDetailsService userService;
 
 
 	@Override
@@ -28,28 +34,38 @@ public class UserValidator implements Validator {
 
 	@Override
 	public void validate(Object obj, Errors errors) {
-		User user = (User) obj;
+		UserForm user = (UserForm) obj;
 		logger.info("email before validation---  :"+user.getEmail());
 		logger.info("password before validation---  :"+user.getPassword());
-		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "NotEmpty");
-		if (user.getEmail().length() < 6 || user.getEmail().length() > 32) {
-            errors.rejectValue("userName", "Size.userForm.userName");
-        }
+		try { 
+			
+			//logger.info("user details service for email--  :"+userService.loadUserByUsername(user.getEmail()));
+			
+			if (userService.loadUserByUsername(user.getEmail()) != null) {
+	            errors.rejectValue("email", "Duplicate.userForm.userName");
+	        }
+		 } catch(Exception ex) {
+	        	logger.warn(ex.getMessage(), ex);
+         }
+		 Pattern pattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+		 if (!(pattern.matcher(user.getEmail()).matches())) {
+
+			errors.rejectValue("email", "user.email.invalid");
+
+		 }
 		
-		if (userService.findByUserName(user.getEmail()) != null) {
-            errors.rejectValue("userName", "Duplicate.userForm.userName");
-        }
-		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");
-        if (user.getPassword().length() < 8 || user.getPassword().length() > 32) {
+		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");
+         if (user.getPassword().length() < 8 || user.getPassword().length() > 32) {
             errors.rejectValue("password", "Size.userForm.password");
-        }
+         }
         
-        if (!user.getConfirmPassword().equals(user.getPassword())) {
-            errors.rejectValue("passwordConfirm", "Diff.userForm.passwordConfirm");
-        }
-        logger.info("error object--  :"+errors);
+         if (!user.getConfirmPassword().equals(user.getPassword())) {
+            errors.rejectValue("confirmPassword", "Diff.userForm.passwordConfirm");
+         }
+         logger.info("error object--  :"+errors);
+       
 	}
    
 
