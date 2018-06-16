@@ -1,7 +1,7 @@
 package com.krishna.seatbooking.dto;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,12 +11,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity(name = "users")
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 	
 	@Id
@@ -34,12 +38,14 @@ public class User {
     private String firstName;
     @Column(name="lastname")
     private String lastName;
+    @Column(name="location")
     private String location;
+    @Column(name="country")
     private String country;
-    
-    private Boolean enabled;
+    @Column(name="enabled")
+    private boolean enabled;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<Role> roles;
+	private List<Role> roles;
 
 	
 

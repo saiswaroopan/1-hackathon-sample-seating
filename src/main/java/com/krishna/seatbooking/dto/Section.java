@@ -11,12 +11,16 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Section {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

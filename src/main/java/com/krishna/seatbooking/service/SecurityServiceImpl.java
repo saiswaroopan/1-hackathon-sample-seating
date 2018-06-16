@@ -11,6 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.krishna.seatbooking.dto.Section;
+import com.krishna.seatbooking.repository.SectionRepository;
 
 @Service
 public class SecurityServiceImpl implements SecurityService {
@@ -23,21 +27,6 @@ public class SecurityServiceImpl implements SecurityService {
 	 @Autowired
 	 private AuthenticationManager authenticationManager;
 	 
-	 
-	
-	 @Override
-     public String findLoggedInUserName() {
-        Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
-        logger.info(" ----- userDetails in findLoggedInUserName--- :"+userDetails);
-        
-        if (userDetails instanceof UserDetails) {
-            return ((UserDetails)userDetails).getUsername();
-        }
-
-        return null;
-     }
-
-
 	@Override
 	public void autologin(String userName, String password) {
 		
@@ -57,6 +46,17 @@ public class SecurityServiceImpl implements SecurityService {
 		
 	}
     
+	public String findLoggedInUserName() {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		if (principal instanceof UserDetails) {
+			return ((UserDetails) principal).getUsername();
+		} else {
+			return principal.toString();
+		}
+	}
+	
+	
 
 
 }

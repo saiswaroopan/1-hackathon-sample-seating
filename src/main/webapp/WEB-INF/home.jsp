@@ -18,7 +18,7 @@
 <body>
 
 	<h1>Welcome User ${username}</h1>
-
+<form:form method="POST" modelAttribute="sectionForm" class="form-signin">
 
 	Select Section:
 
@@ -37,7 +37,7 @@ Select seat:
 		<form:select id="seatContainer" path="seatId" multiple="true">
 
 		</form:select>
-
+</form:form>
 <br/>	
 
 		<button id="bookTickets" class="btn btn-lg btn-primary btn-block"

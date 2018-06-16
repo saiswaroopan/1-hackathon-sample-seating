@@ -30,10 +30,10 @@ public class UserServiceImpl implements UserService {
 	@Override
     public void save(User user) {
 		logger.info("password in save before insertign to db-----  :"+user.getPassword());
-		logger.info("bCryptPasswordEncoder-----  :"+bCryptPasswordEncoder);
-		logger.info("bCryptPasswordEncoder.encode(user.getPassword())-----  :"+bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRoles(new HashSet<>(roleRepository.findAll()));
+		logger.info("country----  :"+user.getCountry());
+        //user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setPassword(user.getPassword());
+        user.setRoles(roleRepository.findAll());
         userRepository.save(user);
         logger.info("After save ---  :");
     }

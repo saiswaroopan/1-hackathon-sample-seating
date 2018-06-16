@@ -34,12 +34,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     	try {
 	    	logger.info("User Name :"+userName);
 	        User user = userRepository.findByUserName(userName);
-	        logger.info("user object after checking with porivded user name :"+userName);
 	        if (user == null) {
 				throw new UsernameNotFoundException("No user found with username: " + userName);
 			}
 	        
-	        logger.info("user.getRoles() with porivded user name :"+user.getRoles());
+	       // logger.info("user.getRoles() with porivded user name :"+user.getRoles());
 	        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 	        for (Role role : user.getRoles()){
 	            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));

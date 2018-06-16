@@ -63,7 +63,7 @@ public class UserController {
 
         userService.save(buildUser(userFormObject));
         logger.info(" -----After saving user details---");
-        securityService.autologin(userFormObject.getEmail(), userFormObject.getConfirmPassword());
+        securityService.autologin(userFormObject.getEmail(), userFormObject.getPassword());
 
         return "redirect:/home";
     }
@@ -80,6 +80,19 @@ public class UserController {
 
         return "login";
     }
+	
+	/*@RequestMapping(value = "/login", method = RequestMethod.POST)
+    public String login(@ModelAttribute("userForm") UserForm userFormObject, Model model, String error, String logout) {
+		
+		logger.info(" ----- In login method ---"+error);
+        if (error != null)
+            model.addAttribute("error", "Your username and password is invalid.");
+
+        if (logout != null)
+            model.addAttribute("message", "You have been logged out successfully.");
+
+        return "login";
+    }*/
 	
 	private User buildUser(UserForm userForm) {
 		User user = User.builder().updatedTmstp(Calendar.getInstance().getTime()).userName(userForm.getEmail())
