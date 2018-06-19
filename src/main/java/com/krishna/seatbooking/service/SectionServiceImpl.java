@@ -62,10 +62,10 @@ public class SectionServiceImpl implements SectionService {
 	}
 
 	public Set<SectionForm> findBookingHistory(String userName) {
-		Optional<List<Section>> bookedSeats = findBySeatsUserName(userName);
+		Optional<List<Section>> bookedSeatsForSection = findBySeatsUserName(userName);
 		Set<SectionForm> bookingHistory = new HashSet<>();
-		if (bookedSeats.isPresent()) {
-			List<Section> sections = bookedSeats.get();
+		if (bookedSeatsForSection.isPresent()) {
+			List<Section> sections = bookedSeatsForSection.get();
 			bookingHistory = sections.stream().flatMap(s -> s.getSeats().stream())
 					.filter(seat -> seat.getUserName() != null && seat.getUserName().equals(userName))
 					.map(seat -> buildSectionForm(seat)).collect(Collectors.toSet());

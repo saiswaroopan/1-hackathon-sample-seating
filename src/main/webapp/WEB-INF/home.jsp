@@ -11,7 +11,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Booking Seat App</title>
-<link href="/css/common.css" rel="stylesheet">
+<link type="text/css" href="/css/common.css" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -21,7 +21,7 @@
 
 <body>
 <div class="container">
-	<h1>Welcome User <label style="color: blue;">${username}</label></h1>
+	<h2 class="">Welcome User <label style="color: orange;">${username}</label></h2>
 		<h6>
 			<label id="message" style="color: blue;"></label>
 		</h6>
@@ -82,11 +82,11 @@
 						<table class="table">
 							<thead>
 								<tr>
-									<th>S.No.#</th>
-									<th>Section</th>
-									<th>Seat</th>
-									<th>Price Per Ticket</th>
-									<th>Total Cost</th>
+									<th class="heading">S.No.#</th>
+									<th class="heading">Section</th>
+									<th class="heading">Seat</th>
+									<th class="heading">Price Per Ticket</th>
+									<th class="heading">Total Cost</th>
 								</tr>
 							</thead>
 							<tbody>

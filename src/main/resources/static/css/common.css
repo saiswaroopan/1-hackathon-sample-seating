@@ -1,7 +1,7 @@
 body {
     padding-top: 40px;
     padding-bottom: 40px;
-    background-color: #00ffff;
+    background-color: #00ffff !important;
 }
 
 .form-signin {
@@ -44,5 +44,21 @@ body {
 }
 
 .has-error {
-    color: red
+    color: red;
+}
+.active>a{
+	background-color: #00ff00 !important;
+}
+
+.nav-tabs>li.active>a {
+	color:red !important;
+}
+
+.h2 {
+    font-size: 30px;
+    color: #6d5857;
+}
+
+.heading {
+    color: purple;
 }
