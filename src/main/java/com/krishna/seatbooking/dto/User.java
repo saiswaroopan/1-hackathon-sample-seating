@@ -44,6 +44,7 @@ public class User {
     private String country;
     @Column(name="enabled")
     private boolean enabled;
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Role> roles;
 

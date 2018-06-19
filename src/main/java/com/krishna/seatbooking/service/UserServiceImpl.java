@@ -1,10 +1,7 @@
 package com.krishna.seatbooking.service;
 
-import java.util.HashSet;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,24 +15,26 @@ public class UserServiceImpl implements UserService {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
     private UserRepository userRepository;
 	
-	@Autowired
     private RoleRepository roleRepository;
 	
-	 @Autowired
-	 private BCryptPasswordEncoder bCryptPasswordEncoder;
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	 
+	public UserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository,
+				UserRepository userRepository) {
+			this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+			this.roleRepository = roleRepository;
+			this.userRepository = userRepository;
+	}
 	
 	@Override
     public void save(User user) {
 		logger.info("password in save before insertign to db-----  :"+user.getPassword());
 		logger.info("country----  :"+user.getCountry());
-        //user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setPassword(user.getPassword());
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(roleRepository.findAll());
         userRepository.save(user);
-        logger.info("After save ---  :");
     }
 	
 	@Override

@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.krishna.seatbooking.dto.User;
 import com.krishna.seatbooking.dto.UserForm;
@@ -21,35 +22,36 @@ import com.krishna.seatbooking.service.SecurityService;
 import com.krishna.seatbooking.service.UserService;
 import com.krishna.seatbooking.util.UserValidator;
 
+@CrossOrigin
 @Controller
 public class UserController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
 	private UserService userService;
 	
-	
-	@Autowired
 	private UserValidator userValidator;
 	
 	@Autowired
 	private SecurityService securityService;
 	
+	public UserController(UserService userService, UserValidator userValidator, SecurityService securityService) {
+		this.userService = userService;
+		this.userValidator = userValidator;
+		this.securityService = securityService;
+	}
 	
-	@RequestMapping(value = "/registration", method = RequestMethod.GET)
+	
+	@RequestMapping(value = "/login")
     public String registration(Model model) {
         model.addAttribute("userForm", new UserForm());
         model.addAttribute("countries", addCounties());
 
-        logger.info(" ----- In registration of GET method ---");
-        return "registration";
+        logger.info(" ----- In registration method for loading form data and countries ---");
+        return "login";
     }
 	
-	public List<String> addCounties() {
-		return Stream.of("IN", "US", "UK").collect(Collectors.toList());
-	}
 	
-	@RequestMapping(value = "/registration", method = RequestMethod.POST)
+	@PostMapping(value = "/registration")
     public String registration(@ModelAttribute("userForm") UserForm userFormObject, BindingResult bindingResult, Model model) {
 		logger.info(" ----- In registration of POST method ---");
 		logger.info("email from userFormObject ---  :"+userFormObject.getEmail());
@@ -58,7 +60,8 @@ public class UserController {
 		logger.info(" ----- error count---"+bindingResult.hasErrors());
         if (bindingResult.hasErrors()) {
         	logger.info(" -----Registration page havign errors-------");
-            return "registration";
+        	model.addAttribute("countries", addCounties());
+			return "login";
         }
 
         userService.save(buildUser(userFormObject));
@@ -68,32 +71,6 @@ public class UserController {
         return "redirect:/home";
     }
     
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(Model model, String error, String logout) {
-		
-		logger.info(" ----- In login method ---"+error);
-        if (error != null)
-            model.addAttribute("error", "Your username and password is invalid.");
-
-        if (logout != null)
-            model.addAttribute("message", "You have been logged out successfully.");
-
-        return "login";
-    }
-	
-	/*@RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@ModelAttribute("userForm") UserForm userFormObject, Model model, String error, String logout) {
-		
-		logger.info(" ----- In login method ---"+error);
-        if (error != null)
-            model.addAttribute("error", "Your username and password is invalid.");
-
-        if (logout != null)
-            model.addAttribute("message", "You have been logged out successfully.");
-
-        return "login";
-    }*/
-	
 	private User buildUser(UserForm userForm) {
 		User user = User.builder().updatedTmstp(Calendar.getInstance().getTime()).userName(userForm.getEmail())
 				.firstName(userForm.getFirstName()).lastName(userForm.getLastName()).enabled(true)
@@ -102,5 +79,8 @@ public class UserController {
 		return user;
 	}
 
+	public List<String> addCounties() {
+		return Stream.of("IN", "US", "UK").collect(Collectors.toList());
+	}
 
 }

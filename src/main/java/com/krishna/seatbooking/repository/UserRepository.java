@@ -7,6 +7,6 @@ import com.krishna.seatbooking.dto.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	
-	@Query(value = "select * from \"users\" where username = ?1", nativeQuery = true)
+	//@Query(value = "select * from \"users\" where username = ?1", nativeQuery = true)
 	User findByUserName(String userName);
 }

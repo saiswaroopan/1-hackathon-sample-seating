@@ -1,34 +1,24 @@
 package com.krishna.seatbooking.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.krishna.seatbooking.dto.Section;
-import com.krishna.seatbooking.dto.User;
-import com.krishna.seatbooking.repository.SectionRepository;
+import com.krishna.seatbooking.dto.SectionForm;
 
-@Service
-public class SectionService {
+public interface SectionService {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-	 @Autowired
-	 private SectionRepository sectionRepository;
-	
 	@Transactional
-	public void bookSeat(Long sectionId, Long seatId, String userName) {
+	void bookSeat(Long sectionId, Long seatId, String userName);
 
-		Section section = sectionRepository.getOne(sectionId);
+	List<Section> findAll();
 
-		section.getSeats().stream().filter(seat -> seat.getId().equals(seatId)).forEach(seat -> {
+	Optional<Section> findById(Long id);
 
-			seat.setAvailable(false);
-			//seat.setUserName(userName);
-		});
+	Optional<List<Section>> findBySeatsUserName(String userName);
 
-
-
-	}
+	Set<SectionForm> findBookingHistory(String userName);
 }

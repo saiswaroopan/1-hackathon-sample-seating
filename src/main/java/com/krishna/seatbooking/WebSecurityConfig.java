@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
@@ -23,31 +22,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
 	private UserDetailsService userDetailsService;
 
 	@Bean
 	public PasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
+	public WebSecurityConfig(UserDetailsService userDetailsService) {
+		super();
+		this.userDetailsService = userDetailsService;
+	}
 
 	@Bean(name = BeanIds.AUTHENTICATION_MANAGER)
 	public AuthenticationManager authenticatonManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
+	
+	
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
 		logger.info("***** In configure method ****** ");
-		/*
-		 * http.authorizeRequests().antMatchers("/public/**").permitAll().
-		 * anyRequest().authenticated().and().httpBasic()
-		 * .and().csrf().disable();
-		 */
 
-		http.authorizeRequests().antMatchers("/css/**", "/js/**", "/registration").permitAll().anyRequest().authenticated()
-				.and().formLogin().loginPage("/login").permitAll().and().logout().permitAll();
+		http.authorizeRequests().antMatchers("/css/**", "/js/**", "/registration").permitAll().anyRequest()
+		.authenticated().and().formLogin().loginPage("/login").permitAll().and().logout().permitAll()
+		.deleteCookies("JSESSIONID").and().csrf().disable();
 
 	}
 
@@ -59,12 +60,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return authProvider;
 	}
 
-	/*
-	 * @Autowired public void configureGlobal(AuthenticationManagerBuilder auth)
-	 * throws Exception {
-	 * auth.inMemoryAuthentication().withUser("admin").password(
-	 * "{noop}Krk@number8").roles("USER"); }
-	 */
 
 	 @Autowired 
 	 public void configureGlobal(AuthenticationManagerBuilder auth)	 throws Exception { 

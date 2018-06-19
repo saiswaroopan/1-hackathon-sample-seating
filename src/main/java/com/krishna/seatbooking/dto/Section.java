@@ -27,6 +27,7 @@ public class Section {
 	private Long id;
 
 	private String name;
+	
 	private String layoutInfo;
 
 	@JsonManagedReference

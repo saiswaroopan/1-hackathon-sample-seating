@@ -22,8 +22,12 @@ import com.krishna.seatbooking.dto.UserForm;
 public class UserValidator implements Validator {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-    private UserDetailsService userService;
+	
+	private UserDetailsService userDetailsService;
+
+	public UserValidator(UserDetailsService userDetailsService) {
+		this.userDetailsService = userDetailsService;
+	}
 
 
 	@Override
@@ -33,39 +37,32 @@ public class UserValidator implements Validator {
 
 
 	@Override
-	public void validate(Object obj, Errors errors) {
-		UserForm user = (UserForm) obj;
-		logger.info("email before validation---  :"+user.getEmail());
-		logger.info("password before validation---  :"+user.getPassword());
+	public void validate(Object o, Errors errors) {
+		UserForm user = (UserForm) o;
+
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "firstName", "NotEmpty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "NotEmpty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "location", "NotEmpty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "NotEmpty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "NotEmpty");
-		try { 
-			
-			//logger.info("user details service for email--  :"+userService.loadUserByUsername(user.getEmail()));
-			
-			if (userService.loadUserByUsername(user.getEmail()) != null) {
-	            errors.rejectValue("email", "Duplicate.userForm.userName");
-	        }
-		 } catch(Exception ex) {
-	        	logger.warn(ex.getMessage(), ex);
-         }
-		 Pattern pattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-
-		 if (!(pattern.matcher(user.getEmail()).matches())) {
-
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "country", "NotEmpty");
+		try {
+			if (userDetailsService.loadUserByUsername(user.getEmail()) != null) {
+				errors.rejectValue("email", "Duplicate.userForm.userName");
+			}
+		} catch (Exception e) {
+			logger.warn(e.getMessage(), e);
+		}
+		Pattern pattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+		if (!(pattern.matcher(user.getEmail()).matches())) {
 			errors.rejectValue("email", "user.email.invalid");
+		}
 
-		 }
-		
-		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");
-         if (user.getPassword().length() < 3 || user.getPassword().length() > 32) {
-            errors.rejectValue("password", "Size.userForm.password");
-         }
-        
-         if (!user.getConfirmPassword().equals(user.getPassword())) {
-            errors.rejectValue("confirmPassword", "Diff.userForm.passwordConfirm");
-         }
-         logger.info("error object--  :"+errors);
-       
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");
+		if (user.getConfirmPassword() == null || !user.getConfirmPassword().equals(user.getPassword())) {
+			errors.rejectValue("confirmPassword", "Diff.userForm.confirmPassword");
+		}
+
 	}
    
 
